@@ -1,22 +1,21 @@
-# 🧠 NeetCode Tracker
+# My Neet Tracker
 
-A personal spaced-repetition revision tracker for the NeetCode 150 problem set. Solve a problem once, let the app remind you when to revisit it — increasing intervals drive the knowledge into long-term memory.
+A personal spaced-repetition revision tracker firstly for the NeetCode 150 problem set (once done with the 150 problems continue and expand this application to fit in Leet and HackerRank). The basic idea is to solve a problem once and then I let the app remind me when to revisit it as increasing intervals drive the knowledge into long-term memory.
 
 ## Features
 
-- **Spaced Repetition** — 6-stage schedule (1 → 2 → 4 → 7 → 14 → 30 days) automatically advances each time you mark a problem as revised. After stage 6 the problem is marked **Mastered**.
+- **Spaced Repetition** — 6-stage schedule (1 → 2 → 4 → 7 → 14 → 30 days) it automatically advances each time you mark a problem as revised. After stage 6 the problem is marked **Mastered** (or something).
 - **Confidence Rating** — 1–5 star rating per problem, editable anytime.
 - **Dashboard** — stats cards (total / due today / overdue / mastered), 30-day activity streak bar, and urgency-colour-coded problem cards.
-- **Three Views** — *Today* (overdue + due today + coming-up), *All Problems* (filterable by category & difficulty), *Schedule* (next 7 days).
+- **Three Views** — _Today_ (overdue + due today + coming-up), _All Problems_ (filterable by category & difficulty), _Schedule_ (next 7 days).
 - **Browser Notifications** — requests permission on first visit; sends a daily notification when problems are due or overdue.
-- **Dark Mode** — toggleable, persisted in localStorage.
 - **Export / Import** — one-click JSON backup and restore.
-- **Pre-loaded** — ships with all 14 of your solved problems already in the tracker.
+- **Pre-loaded** — ships with all 14 of my first 14 solved problems already in the tracker.
 
 ## Problem Schedule
 
 | Stage | Interval |
-|-------|----------|
+| ----- | -------- |
 | 1     | 1 day    |
 | 2     | 2 days   |
 | 3     | 4 days   |
@@ -27,12 +26,12 @@ A personal spaced-repetition revision tracker for the NeetCode 150 problem set. 
 
 ## Tech Stack
 
-| Layer      | Technology                    |
-|------------|-------------------------------|
-| Framework  | React 18 + TypeScript         |
-| Build tool | Vite 5                        |
-| Styling    | Tailwind CSS 3 (dark-mode: class) |
-| Persistence | localStorage (no backend)    |
+| Layer       | Technology            |
+| ----------- | --------------------- |
+| Framework   | React 18 + TypeScript |
+| Build tool  | Vite 5                |
+| Styling     | Tailwind CSS 3        |
+| Persistence | localStorage (no BE)  |
 
 ## Getting Started
 
@@ -89,7 +88,7 @@ Click **Export ↓** in the header to download your data as JSON. To restore, cl
 
 ## Pre-loaded Problems
 
-| Category         | Problems |
-|------------------|----------|
+| Category         | Problems                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Arrays & Hashing | Contains Duplicate · Valid Anagram · Two Sum · Group Anagrams · Top K Frequent Elements · Encode and Decode Strings · Product of Array Except Self · Valid Sudoku · Longest Consecutive Sequence |
-| Two Pointers     | Valid Palindrome · Two Sum II · 3Sum · Container With Most Water · Trapping Rain Water |
+| Two Pointers     | Valid Palindrome · Two Sum II · 3Sum · Container With Most Water · Trapping Rain Water                                                                                                           |
