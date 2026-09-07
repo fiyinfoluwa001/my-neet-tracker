@@ -1,8 +1,10 @@
 import { useState, useMemo, useRef } from 'react';
 import { useProblems } from './hooks/useProblems';
 import { useNotifications } from './hooks/useNotifications';
+import { useEmailReminder } from './hooks/useEmailReminder';
 import { ProblemCard } from './components/ProblemCard';
 import { AddProblemModal } from './components/AddProblemModal';
+import { SettingsModal } from './components/SettingsModal';
 import { StatsGrid } from './components/StatsGrid';
 import { StreakBar } from './components/StreakBar';
 import { DaySchedule } from './components/DaySchedule';
@@ -11,12 +13,14 @@ import { isOverdue, isDueToday, isMastered, todayStr } from './utils/spacedRepet
 import { exportData, parseImport } from './utils/storage';
 
 export default function App() {
-  const { state, addProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState } =
+  const { state, addProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings } =
     useProblems();
   const { overdueCount, dueTodayCount } = useNotifications(state.problems);
+  useEmailReminder(state.problems, state.emailSettings);
 
   const [tab, setTab] = useState<Tab>('today');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterDifficulty, setFilterDifficulty] = useState('all');
   const [importError, setImportError] = useState<string | null>(null);
@@ -135,6 +139,19 @@ export default function App() {
                 Import ↑
               </button>
               <input ref={importRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
+
+              {/* Email settings */}
+              <button
+                onClick={() => setShowSettings(true)}
+                className={`text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
+                  state.emailSettings.enabled
+                    ? 'border-blue-400 text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                    : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+                title={state.emailSettings.enabled ? 'Email reminders ON' : 'Set up email reminders'}
+              >
+                {state.emailSettings.enabled ? '📧 On' : '📧'}
+              </button>
 
               {/* Dark mode toggle */}
               <button
@@ -306,6 +323,16 @@ export default function App() {
             onAdd={addProblem}
             onClose={() => setShowAddModal(false)}
             existingCategories={categories}
+          />
+        )}
+
+        {/* Email Settings Modal */}
+        {showSettings && (
+          <SettingsModal
+            settings={state.emailSettings}
+            problems={state.problems}
+            onSave={updateEmailSettings}
+            onClose={() => setShowSettings(false)}
           />
         )}
       </div>

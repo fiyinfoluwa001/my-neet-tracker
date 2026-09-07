@@ -1,5 +1,7 @@
 # My Neet Tracker
 
+**🚀 Live app: [my-neet-tracker.vercel.app](https://my-neet-tracker.vercel.app/)**
+
 A personal spaced-repetition revision tracker firstly for the NeetCode 150 problem set (once done with the 150 problems continue and expand this application to fit in Leet and HackerRank). The basic idea is to solve a problem once and then I let the app remind me when to revisit it as increasing intervals drive the knowledge into long-term memory.
 
 ## Features
