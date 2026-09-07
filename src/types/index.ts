@@ -13,10 +13,19 @@ export interface Problem {
   revisedDates: string[];
 }
 
+export interface EmailSettings {
+  enabled: boolean;
+  recipientEmail: string;
+  serviceId: string;
+  templateId: string;
+  publicKey: string;
+}
+
 export interface AppState {
   problems: Problem[];
   darkMode: boolean;
   activeDates: string[]; // YYYY-MM-DD dates when user was active
+  emailSettings: EmailSettings;
 }
 
 export type Tab = 'today' | 'all' | 'schedule';

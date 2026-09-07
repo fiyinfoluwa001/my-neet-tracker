@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Problem, AppState, Difficulty } from '../types';
+import { Problem, AppState, Difficulty, EmailSettings } from '../types';
 import { loadState, saveState } from '../utils/storage';
 import { advanceStage, computeFirstNextRevision, todayStr } from '../utils/spacedRepetition';
 
@@ -29,6 +29,13 @@ const DEFAULT_STATE: AppState = {
   problems: PRELOADED,
   darkMode: false,
   activeDates: ['2026-09-06'],
+  emailSettings: {
+    enabled: false,
+    recipientEmail: '',
+    serviceId: '',
+    templateId: '',
+    publicKey: '',
+  },
 };
 
 let _idSeq = Date.now();
@@ -102,5 +109,9 @@ export function useProblems() {
     setState(newState);
   }, []);
 
-  return { state, addProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState };
+  const updateEmailSettings = useCallback((settings: EmailSettings) => {
+    setState(prev => ({ ...prev, emailSettings: settings }));
+  }, []);
+
+  return { state, addProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings };
 }
