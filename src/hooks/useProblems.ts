@@ -50,6 +50,22 @@ export function useProblems() {
     saveState(state);
   }, [state]);
 
+  // Sync problems + email settings to the backend (powers the 10am cron email).
+  // Debounced 2s so rapid changes don't spam the API. Fails silently in local dev.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetch('/api/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          problems: state.problems,
+          emailSettings: state.emailSettings,
+        }),
+      }).catch(() => { /* offline or local dev — ignore */ });
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [state.problems, state.emailSettings]);
+
   // Mark today as active whenever the hook mounts
   useEffect(() => {
     const today = todayStr();
