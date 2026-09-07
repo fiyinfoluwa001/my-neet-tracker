@@ -1,6 +1,6 @@
 import { AppState } from '../types';
 
-const STORAGE_KEY = 'neetcode-tracker-v2';
+const STORAGE_KEY = 'neetcode-tracker-v3';
 
 export function loadState(): AppState | null {
   try {
