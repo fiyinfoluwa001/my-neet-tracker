@@ -87,6 +87,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ...dueTodayList.map(p => `📅 Due Today — ${p.name} (${p.difficulty}, ${p.category}, Stage ${p.stage}/6)`),
     ].join('\n');
 
+    const slot = (req.query.slot as string) ?? 'morning';
+    const sentKey = `sent:${today}:${slot}`;
+    const alreadySent = await redis.get(sentKey);
+    if (alreadySent) {
+      return res.status(200).json({ message: `${slot} reminder already sent today.` });
+    }
+
     const emailRes = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -110,9 +117,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw new Error(`EmailJS error ${emailRes.status}: ${text}`);
     }
 
+    // Mark this slot as sent for today (expires in 25h so it resets cleanly each day)
+    await redis.set(sentKey, '1', { ex: 90000 });
+
     return res.status(200).json({
-      message: `Daily reminder sent — ${allDue.length} problem(s)`,
+      message: `${slot} reminder sent — ${allDue.length} problem(s)`,
       date: today,
+      slot,
     });
   } catch (err) {
     console.error('send-reminder failed:', err);

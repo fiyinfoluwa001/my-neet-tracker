@@ -121,6 +121,18 @@ export function useProblems() {
     setState(prev => ({ ...prev, darkMode: !prev.darkMode }));
   }, []);
 
+  const editProblem = useCallback(
+    (id: string, name: string, difficulty: Difficulty, category: string, dateSolved: string) => {
+      setState(prev => ({
+        ...prev,
+        problems: prev.problems.map(p =>
+          p.id === id ? { ...p, name, difficulty, category, dateSolved } : p
+        ),
+      }));
+    },
+    []
+  );
+
   const importState = useCallback((newState: AppState) => {
     setState(newState);
   }, []);
@@ -129,5 +141,5 @@ export function useProblems() {
     setState(prev => ({ ...prev, emailSettings: settings }));
   }, []);
 
-  return { state, addProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings };
+  return { state, addProblem, editProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings };
 }

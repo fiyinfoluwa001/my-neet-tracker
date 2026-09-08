@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Difficulty } from '../types';
+import { Difficulty, Problem } from '../types';
 
 const NEETCODE_CATEGORIES = [
   'Arrays & Hashing',
@@ -26,14 +26,19 @@ interface Props {
   onAdd: (name: string, difficulty: Difficulty, category: string, dateSolved: string) => void;
   onClose: () => void;
   existingCategories: string[];
+  // When provided the modal operates in edit mode
+  problem?: Problem;
+  onEdit?: (id: string, name: string, difficulty: Difficulty, category: string, dateSolved: string) => void;
 }
 
-export function AddProblemModal({ onAdd, onClose, existingCategories }: Props) {
-  const [name, setName] = useState('');
-  const [difficulty, setDifficulty] = useState<Difficulty>('medium');
-  const [category, setCategory] = useState(existingCategories[0] ?? NEETCODE_CATEGORIES[0]);
+export function AddProblemModal({ onAdd, onEdit, onClose, existingCategories, problem }: Props) {
+  const isEdit = Boolean(problem);
+
+  const [name, setName] = useState(problem?.name ?? '');
+  const [difficulty, setDifficulty] = useState<Difficulty>(problem?.difficulty ?? 'medium');
+  const [category, setCategory] = useState(problem?.category ?? existingCategories[0] ?? NEETCODE_CATEGORIES[0]);
   const [customCategory, setCustomCategory] = useState('');
-  const [dateSolved, setDateSolved] = useState(new Date().toISOString().split('T')[0]);
+  const [dateSolved, setDateSolved] = useState(problem?.dateSolved ?? new Date().toISOString().split('T')[0]);
 
   // Merge known categories without duplicates, preserving order
   const allCategories = Array.from(
@@ -43,10 +48,13 @@ export function AddProblemModal({ onAdd, onClose, existingCategories }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-    const finalCategory =
-      category === '__custom__' ? customCategory.trim() : category;
+    const finalCategory = category === '__custom__' ? customCategory.trim() : category;
     if (!finalCategory) return;
-    onAdd(name.trim(), difficulty, finalCategory, dateSolved);
+    if (isEdit && problem && onEdit) {
+      onEdit(problem.id, name.trim(), difficulty, finalCategory, dateSolved);
+    } else {
+      onAdd(name.trim(), difficulty, finalCategory, dateSolved);
+    }
     onClose();
   };
 
@@ -60,7 +68,7 @@ export function AddProblemModal({ onAdd, onClose, existingCategories }: Props) {
     >
       <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md shadow-2xl animate-fade-in">
         <div className="flex justify-between items-center mb-5">
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white">Add Problem</h2>
+          <h2 className="text-base font-semibold text-gray-900 dark:text-white">{isEdit ? 'Edit Problem' : 'Add Problem'}</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors text-lg leading-none"
@@ -162,7 +170,7 @@ export function AddProblemModal({ onAdd, onClose, existingCategories }: Props) {
               type="submit"
               className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors"
             >
-              Add Problem
+              {isEdit ? 'Save Changes' : 'Add Problem'}
             </button>
           </div>
         </form>
