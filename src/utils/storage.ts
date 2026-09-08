@@ -6,7 +6,19 @@ export function loadState(): AppState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as AppState;
+    const data = JSON.parse(raw) as AppState;
+
+    // Migrate: single `category: string` → `categories: string[]`
+    if (Array.isArray(data.problems)) {
+      data.problems = data.problems.map((p: AppState['problems'][number] & { category?: string }) => {
+        if (!p.categories) {
+          return { ...p, categories: p.category ? [p.category] : [] };
+        }
+        return p;
+      });
+    }
+
+    return data;
   } catch {
     return null;
   }

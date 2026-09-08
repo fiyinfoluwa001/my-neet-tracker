@@ -51,9 +51,11 @@ export function ProblemCard({ problem, onMarkRevised, onRemove, onUpdateConfiden
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${DIFFICULTY_STYLES[problem.difficulty]}`}>
               {DIFFICULTY_LABELS[problem.difficulty]}
             </span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-              {problem.category}
-            </span>
+            {problem.categories.map(cat => (
+              <span key={cat} className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                {cat}
+              </span>
+            ))}
           </div>
         </div>
         <div className="flex items-center gap-1.5 shrink-0 mt-0.5">

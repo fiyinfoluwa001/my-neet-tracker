@@ -7,7 +7,7 @@ interface Problem {
   id: string;
   name: string;
   difficulty: string;
-  category: string;
+  categories: string[];
   stage: number;
   nextRevision: string | null;
 }
@@ -83,8 +83,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const problemsText = [
-      ...overdueList.map(p  => `⚠️ OVERDUE  — ${p.name} (${p.difficulty}, ${p.category}, Stage ${p.stage}/6)`),
-      ...dueTodayList.map(p => `📅 Due Today — ${p.name} (${p.difficulty}, ${p.category}, Stage ${p.stage}/6)`),
+      ...overdueList.map(p  => `⚠️ OVERDUE  — ${p.name} (${p.difficulty}, ${p.categories.join(' · ')}, Stage ${p.stage}/6)`),
+      ...dueTodayList.map(p => `📅 Due Today — ${p.name} (${p.difficulty}, ${p.categories.join(' · ')}, Stage ${p.stage}/6)`),
     ].join('\n');
 
     const slot = (req.query.slot as string) ?? 'morning';
