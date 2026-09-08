@@ -28,13 +28,13 @@ export default function App() {
   const importRef = useRef<HTMLInputElement>(null);
 
   const categories = useMemo(
-    () => Array.from(new Set(state.problems.map(p => p.category))).sort(),
+    () => Array.from(new Set(state.problems.flatMap(p => p.categories))).sort(),
     [state.problems]
   );
 
   const filteredProblems = useMemo(() => {
     return state.problems.filter(p => {
-      if (filterCategory !== 'all' && p.category !== filterCategory) return false;
+      if (filterCategory !== 'all' && !p.categories.includes(filterCategory)) return false;
       if (filterDifficulty !== 'all' && p.difficulty !== filterDifficulty) return false;
       return true;
     });

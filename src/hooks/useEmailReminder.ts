@@ -7,7 +7,7 @@ const EMAIL_LAST_SENT_KEY = 'email-reminder-last-sent';
 
 function formatProblemLine(p: Problem, isOverdueP: boolean): string {
   const flag = isOverdueP ? '⚠️ OVERDUE' : '📅 Due Today';
-  return `${flag} — ${p.name} (${p.difficulty}, ${p.category}, Stage ${p.stage}/6)`;
+  return `${flag} — ${p.name} (${p.difficulty}, ${p.categories.join(' · ')}, Stage ${p.stage}/6)`;
 }
 
 export function useEmailReminder(problems: Problem[], settings: EmailSettings) {

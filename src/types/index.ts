@@ -4,7 +4,7 @@ export interface Problem {
   id: string;
   name: string;
   difficulty: Difficulty;
-  category: string;
+  categories: string[];
   dateSolved: string;    // YYYY-MM-DD
   stage: number;         // 1–6 active, 7+ = mastered
   lastRevised: string | null;
