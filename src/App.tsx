@@ -13,7 +13,7 @@ import { isOverdue, isDueToday, isMastered, todayStr } from './utils/spacedRepet
 import { exportData, parseImport } from './utils/storage';
 
 export default function App() {
-  const { state, addProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings } =
+  const { state, addProblem, editProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings } =
     useProblems();
   const { overdueCount, dueTodayCount } = useNotifications(state.problems);
   useEmailReminder(state.problems, state.emailSettings);
@@ -21,6 +21,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('today');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [editingProblem, setEditingProblem] = useState<import('./types').Problem | null>(null);
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterDifficulty, setFilterDifficulty] = useState('all');
   const [importError, setImportError] = useState<string | null>(null);
@@ -66,7 +67,7 @@ export default function App() {
     e.target.value = '';
   };
 
-  const cardProps = { onMarkRevised: markRevised, onRemove: removeProblem, onUpdateConfidence: updateConfidence };
+  const cardProps = { onMarkRevised: markRevised, onRemove: removeProblem, onUpdateConfidence: updateConfidence, onEdit: setEditingProblem };
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'today', label: 'Today' },
@@ -322,6 +323,17 @@ export default function App() {
           <AddProblemModal
             onAdd={addProblem}
             onClose={() => setShowAddModal(false)}
+            existingCategories={categories}
+          />
+        )}
+
+        {/* Edit Problem Modal */}
+        {editingProblem && (
+          <AddProblemModal
+            problem={editingProblem}
+            onAdd={addProblem}
+            onEdit={editProblem}
+            onClose={() => setEditingProblem(null)}
             existingCategories={categories}
           />
         )}

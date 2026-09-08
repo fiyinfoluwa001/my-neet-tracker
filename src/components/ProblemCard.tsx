@@ -6,6 +6,7 @@ interface Props {
   onMarkRevised: (id: string) => void;
   onRemove: (id: string) => void;
   onUpdateConfidence: (id: string, rating: number) => void;
+  onEdit: (problem: Problem) => void;
 }
 
 const DIFFICULTY_STYLES = {
@@ -16,7 +17,7 @@ const DIFFICULTY_STYLES = {
 
 const DIFFICULTY_LABELS = { easy: 'Easy', medium: 'Medium', hard: 'Hard' } as const;
 
-export function ProblemCard({ problem, onMarkRevised, onRemove, onUpdateConfidence }: Props) {
+export function ProblemCard({ problem, onMarkRevised, onRemove, onUpdateConfidence, onEdit }: Props) {
   const mastered  = isMastered(problem);
   const overdue   = isOverdue(problem);
   const dueToday  = isDueToday(problem);
@@ -55,14 +56,24 @@ export function ProblemCard({ problem, onMarkRevised, onRemove, onUpdateConfiden
             </span>
           </div>
         </div>
-        <button
-          onClick={() => onRemove(problem.id)}
-          className="shrink-0 text-gray-300 hover:text-red-400 dark:text-gray-600 dark:hover:text-red-400 transition-colors text-sm leading-none mt-0.5"
-          title="Remove problem"
-          aria-label="Remove problem"
-        >
-          ✕
-        </button>
+        <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
+          <button
+            onClick={() => onEdit(problem)}
+            className="text-gray-300 hover:text-blue-400 dark:text-gray-600 dark:hover:text-blue-400 transition-colors text-sm leading-none"
+            title="Edit problem"
+            aria-label="Edit problem"
+          >
+            ✏
+          </button>
+          <button
+            onClick={() => onRemove(problem.id)}
+            className="text-gray-300 hover:text-red-400 dark:text-gray-600 dark:hover:text-red-400 transition-colors text-sm leading-none"
+            title="Remove problem"
+            aria-label="Remove problem"
+          >
+            ✕
+          </button>
+        </div>
       </div>
 
       {/* Stage + urgency */}
