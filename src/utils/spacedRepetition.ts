@@ -45,9 +45,40 @@ export function getDaysUntilRevision(problem: Problem): number | null {
   return Math.round((next.getTime() - today.getTime()) / 86_400_000);
 }
 
-export function advanceStage(problem: Problem): Partial<Problem> {
+// How many days past the due date is this problem?
+export function getDaysOverdue(problem: Problem): number {
+  if (!problem.nextRevision || isMastered(problem)) return 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(problem.nextRevision);
+  due.setHours(0, 0, 0, 0);
+  return Math.max(0, Math.round((today.getTime() - due.getTime()) / 86_400_000));
+}
+
+// Option C penalty rules:
+//   0–3 days overdue  → advance stage normally
+//   4–7 days overdue  → stay at same stage (missed the window, redo it)
+//   8+ days overdue   → drop back one stage (likely forgotten it)
+export type RevisionOutcome = 'advanced' | 'held' | 'regressed';
+
+export function advanceStage(problem: Problem): Partial<Problem> & { outcome: RevisionOutcome } {
   const today = todayStr();
-  const newStage = problem.stage + 1;
+  const daysOverdue = getDaysOverdue(problem);
+
+  let newStage: number;
+  let outcome: RevisionOutcome;
+
+  if (daysOverdue <= 3) {
+    newStage = problem.stage + 1;
+    outcome = 'advanced';
+  } else if (daysOverdue <= 7) {
+    newStage = problem.stage;       // stay — redo the same interval from today
+    outcome = 'held';
+  } else {
+    newStage = Math.max(1, problem.stage - 1);
+    outcome = 'regressed';
+  }
+
   const interval = STAGE_INTERVALS[newStage];
   const nextRevision = interval != null ? addDays(today, interval) : null;
 
@@ -56,10 +87,10 @@ export function advanceStage(problem: Problem): Partial<Problem> {
     lastRevised: today,
     nextRevision,
     revisedDates: [...problem.revisedDates, today],
+    outcome,
   };
 }
 
 export function computeFirstNextRevision(dateSolved: string): string {
-  // Stage 1 → 1 day after solving
   return addDays(dateSolved, STAGE_INTERVALS[1]);
 }

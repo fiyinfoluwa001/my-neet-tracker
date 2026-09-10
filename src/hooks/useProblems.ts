@@ -103,7 +103,11 @@ export function useProblems() {
     const today = todayStr();
     setState(prev => ({
       ...prev,
-      problems: prev.problems.map(p => (p.id === id ? { ...p, ...advanceStage(p) } : p)),
+      problems: prev.problems.map(p => {
+        if (p.id !== id) return p;
+        const { outcome, ...rest } = advanceStage(p);
+        return { ...p, ...rest, lastOutcome: outcome };
+      }),
       activeDates: prev.activeDates.includes(today)
         ? prev.activeDates
         : [...prev.activeDates, today],

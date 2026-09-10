@@ -80,9 +80,21 @@ export function ProblemCard({ problem, onMarkRevised, onRemove, onUpdateConfiden
 
       {/* Stage + urgency */}
       <div className="flex justify-between items-center">
-        <span className="text-xs text-gray-500 dark:text-gray-400">
-          {mastered ? '🏆 Mastered' : `Stage ${problem.stage}/6`}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {mastered ? '🏆 Mastered' : `Stage ${problem.stage}/6`}
+          </span>
+          {problem.lastOutcome === 'held' && (
+            <span className="text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300" title="Missed window by 4–7 days — stage stays the same">
+              ⏸ Held
+            </span>
+          )}
+          {problem.lastOutcome === 'regressed' && (
+            <span className="text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300" title="Missed by 8+ days — dropped back a stage">
+              ↓ Regressed
+            </span>
+          )}
+        </div>
         {urgencyText}
       </div>
 
