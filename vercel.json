@@ -3,10 +3,6 @@
     {
       "path": "/api/send-reminder?slot=morning",
       "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/send-reminder?slot=evening",
-      "schedule": "0 19 * * *"
     }
   ]
 }
