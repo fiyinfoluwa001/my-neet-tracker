@@ -5,7 +5,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   // If Redis is not configured, tell the browser it can send as fallback
-  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
     return res.status(200).json({ sent: false, configured: false });
   }
 
@@ -14,8 +14,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const redis = new Redis({
-      url:   process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      url:   process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN,
     });
     const value = await redis.get(`sent:${today}:${slot}`);
     return res.status(200).json({ sent: Boolean(value), configured: true });
