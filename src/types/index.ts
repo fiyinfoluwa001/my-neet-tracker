@@ -11,6 +11,7 @@ export interface Problem {
   nextRevision: string | null; // YYYY-MM-DD
   confidence: number;    // 1–5
   revisedDates: string[];
+  lastOutcome?: 'advanced' | 'held' | 'regressed';
 }
 
 export interface EmailSettings {
