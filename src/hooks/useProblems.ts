@@ -7,27 +7,27 @@ import { advanceStage, computeFirstNextRevision, findAvailableDate, todayStr } f
 // 1 new problem you add daily). Overdue problems are redistributed so nothing
 // piles up. After you mark each one revised it enters the normal SR cycle.
 const PRELOADED: Problem[] = [
-  // Sep 14 — 2 problems
-  { id: 'pre-08', name: 'Valid Sudoku',                 difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-14', confidence: 3, revisedDates: [] },
-  { id: 'pre-01', name: 'Contains Duplicate',           difficulty: 'easy',   categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-14', confidence: 3, revisedDates: [] },
   // Sep 15 — 2 problems
-  { id: 'pre-09', name: 'Longest Consecutive Sequence', difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-15', confidence: 3, revisedDates: [] },
-  { id: 'pre-02', name: 'Valid Anagram',                difficulty: 'easy',   categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-15', confidence: 3, revisedDates: [] },
+  { id: 'pre-08', name: 'Valid Sudoku',                 difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-15', confidence: 3, revisedDates: [] },
+  { id: 'pre-01', name: 'Contains Duplicate',           difficulty: 'easy',   categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-15', confidence: 3, revisedDates: [] },
   // Sep 16 — 2 problems
-  { id: 'pre-10', name: 'Valid Palindrome',             difficulty: 'easy',   categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-16', confidence: 3, revisedDates: [] },
-  { id: 'pre-03', name: 'Two Sum',                      difficulty: 'easy',   categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-16', confidence: 3, revisedDates: [] },
+  { id: 'pre-09', name: 'Longest Consecutive Sequence', difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-16', confidence: 3, revisedDates: [] },
+  { id: 'pre-02', name: 'Valid Anagram',                difficulty: 'easy',   categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-16', confidence: 3, revisedDates: [] },
   // Sep 17 — 2 problems
-  { id: 'pre-11', name: 'Two Sum II',                   difficulty: 'medium', categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-17', confidence: 3, revisedDates: [] },
-  { id: 'pre-04', name: 'Group Anagrams',               difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-17', confidence: 3, revisedDates: [] },
+  { id: 'pre-10', name: 'Valid Palindrome',             difficulty: 'easy',   categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-17', confidence: 3, revisedDates: [] },
+  { id: 'pre-03', name: 'Two Sum',                      difficulty: 'easy',   categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-17', confidence: 3, revisedDates: [] },
   // Sep 18 — 2 problems
-  { id: 'pre-12', name: '3Sum',                         difficulty: 'medium', categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-18', confidence: 3, revisedDates: [] },
-  { id: 'pre-05', name: 'Top K Frequent Elements',      difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-18', confidence: 3, revisedDates: [] },
+  { id: 'pre-11', name: 'Two Sum II',                   difficulty: 'medium', categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-18', confidence: 3, revisedDates: [] },
+  { id: 'pre-04', name: 'Group Anagrams',               difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-18', confidence: 3, revisedDates: [] },
   // Sep 19 — 2 problems
-  { id: 'pre-13', name: 'Container With Most Water',    difficulty: 'medium', categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-19', confidence: 3, revisedDates: [] },
-  { id: 'pre-06', name: 'Encode and Decode Strings',    difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-19', confidence: 3, revisedDates: [] },
+  { id: 'pre-12', name: '3Sum',                         difficulty: 'medium', categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-19', confidence: 3, revisedDates: [] },
+  { id: 'pre-05', name: 'Top K Frequent Elements',      difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-19', confidence: 3, revisedDates: [] },
   // Sep 20 — 2 problems
-  { id: 'pre-14', name: 'Trapping Rain Water',          difficulty: 'hard',   categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-20', confidence: 3, revisedDates: [] },
-  { id: 'pre-07', name: 'Product of Array Except Self', difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-20', confidence: 3, revisedDates: [] },
+  { id: 'pre-13', name: 'Container With Most Water',    difficulty: 'medium', categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-20', confidence: 3, revisedDates: [] },
+  { id: 'pre-06', name: 'Encode and Decode Strings',    difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-20', confidence: 3, revisedDates: [] },
+  // Sep 21 — 2 problems
+  { id: 'pre-14', name: 'Trapping Rain Water',          difficulty: 'hard',   categories: ['Two Pointers'],    dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-21', confidence: 3, revisedDates: [] },
+  { id: 'pre-07', name: 'Product of Array Except Self', difficulty: 'medium', categories: ['Arrays & Hashing'], dateSolved: '2026-09-06', stage: 1, lastRevised: null, nextRevision: '2026-09-21', confidence: 3, revisedDates: [] },
 ];
 
 const DEFAULT_STATE: AppState = {
