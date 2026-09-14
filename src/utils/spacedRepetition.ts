@@ -94,3 +94,23 @@ export function advanceStage(problem: Problem): Partial<Problem> & { outcome: Re
 export function computeFirstNextRevision(dateSolved: string): string {
   return addDays(dateSolved, STAGE_INTERVALS[1]);
 }
+
+// Returns the earliest date >= preferredDate that has fewer than dailyLimit
+// active (non-mastered) problems already scheduled. Excludes the problem
+// being rescheduled itself so it doesn't count against its own slot.
+export function findAvailableDate(
+  problems: Problem[],
+  preferredDate: string,
+  excludeId: string,
+  dailyLimit = 2
+): string {
+  let candidate = preferredDate;
+  for (let i = 0; i < 90; i++) {
+    const booked = problems.filter(
+      p => p.id !== excludeId && p.nextRevision === candidate && !isMastered(p)
+    ).length;
+    if (booked < dailyLimit) return candidate;
+    candidate = addDays(candidate, 1);
+  }
+  return candidate;
+}
