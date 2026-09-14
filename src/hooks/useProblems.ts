@@ -33,7 +33,10 @@ const PRELOADED: Problem[] = [
 const DEFAULT_STATE: AppState = {
   problems: PRELOADED,
   darkMode: false,
-  activeDates: ['2026-09-06'],
+  activeDates: [
+    '2026-09-06', '2026-09-07', '2026-09-08', '2026-09-09',
+    '2026-09-10', '2026-09-11', '2026-09-12', '2026-09-13', '2026-09-14',
+  ],
   emailSettings: {
     enabled: false,
     recipientEmail: '',
