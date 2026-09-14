@@ -73,6 +73,7 @@ async function sendFallbackEmail(
       overdue_count: overdueList.length,
       due_count:     dueTodayList.length,
       problems_list: problemsText,
+      dashboard_url: 'https://my-neet-tracker-git-main-boluwatife010s-projects.vercel.app/',
     },
     publicKey
   );
