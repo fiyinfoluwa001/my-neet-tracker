@@ -15,7 +15,7 @@ import { exportData, parseImport } from './utils/storage';
 export default function App() {
   const { state, addProblem, editProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings } =
     useProblems();
-  const { overdueCount, dueTodayCount } = useNotifications(state.problems);
+  useNotifications(state.problems);
   useEmailReminder(state.problems, state.emailSettings);
 
   const [tab, setTab] = useState<Tab>('today');
@@ -40,8 +40,21 @@ export default function App() {
     });
   }, [state.problems, filterCategory, filterDifficulty]);
 
+  const MAX_DAILY_SR = 2;
+
   const overdueProblems  = useMemo(() => state.problems.filter(isOverdue), [state.problems]);
   const dueTodayProblems = useMemo(() => state.problems.filter(isDueToday), [state.problems]);
+
+  // Cap what's shown today to MAX_DAILY_SR combined (overdue first, then due today)
+  const allDueSR = useMemo(
+    () => [...overdueProblems, ...dueTodayProblems],
+    [overdueProblems, dueTodayProblems]
+  );
+  const visibleDueSR  = useMemo(() => allDueSR.slice(0, MAX_DAILY_SR), [allDueSR]);
+  const hiddenSRCount = allDueSR.length - visibleDueSR.length;
+  const visibleOverdue   = useMemo(() => visibleDueSR.filter(isOverdue),   [visibleDueSR]);
+  const visibleDueToday  = useMemo(() => visibleDueSR.filter(isDueToday),  [visibleDueSR]);
+
   const upcomingProblems = useMemo(() => {
     const today = todayStr();
     return state.problems
@@ -80,17 +93,17 @@ export default function App() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
 
         {/* Notification banner */}
-        {(overdueCount > 0 || dueTodayCount > 0) && (
+        {(visibleOverdue.length > 0 || visibleDueToday.length > 0) && (
           <div
             className={`px-4 py-2.5 text-center text-sm font-medium ${
-              overdueCount > 0
+              visibleOverdue.length > 0
                 ? 'bg-red-500 text-white'
                 : 'bg-amber-400 text-amber-900'
             }`}
           >
-            {overdueCount > 0
-              ? `⚠️ ${overdueCount} overdue problem${overdueCount > 1 ? 's' : ''} need revision!`
-              : `📚 ${dueTodayCount} problem${dueTodayCount > 1 ? 's' : ''} due today!`}
+            {visibleOverdue.length > 0
+              ? `⚠️ ${visibleOverdue.length} overdue problem${visibleOverdue.length > 1 ? 's' : ''} need revision!`
+              : `📚 ${visibleDueToday.length} problem${visibleDueToday.length > 1 ? 's' : ''} due today!`}
             {' '}
             <button
               onClick={() => setTab('today')}
@@ -187,13 +200,13 @@ export default function App() {
                 }`}
               >
                 {t.label}
-                {t.id === 'today' && overdueCount + dueTodayCount > 0 && (
+                {t.id === 'today' && visibleDueSR.length > 0 && (
                   <span className={`ml-1.5 inline-flex items-center justify-center text-xs w-5 h-5 rounded-full ${
-                    overdueCount > 0
+                    visibleOverdue.length > 0
                       ? 'bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400'
                       : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400'
                   }`}>
-                    {overdueCount + dueTodayCount}
+                    {visibleDueSR.length}
                   </span>
                 )}
               </button>
@@ -209,42 +222,58 @@ export default function App() {
           {/* ── TODAY TAB ── */}
           {tab === 'today' && (
             <div className="space-y-8">
-              {/* Overdue */}
-              {overdueProblems.length > 0 && (
+              {/* Overdue (capped) */}
+              {visibleOverdue.length > 0 && (
                 <section>
                   <SectionHeading
                     emoji="🔴"
                     title="Overdue"
-                    count={overdueProblems.length}
+                    count={visibleOverdue.length}
                     countColor="text-red-500"
                   />
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {overdueProblems.map(p => (
+                    {visibleOverdue.map(p => (
                       <ProblemCard key={p.id} problem={p} {...cardProps} />
                     ))}
                   </div>
                 </section>
               )}
 
-              {/* Due Today */}
-              {dueTodayProblems.length > 0 && (
+              {/* Due Today (capped) */}
+              {visibleDueToday.length > 0 && (
                 <section>
                   <SectionHeading
                     emoji="🟡"
                     title="Due Today"
-                    count={dueTodayProblems.length}
+                    count={visibleDueToday.length}
                     countColor="text-amber-500"
                   />
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {dueTodayProblems.map(p => (
+                    {visibleDueToday.map(p => (
                       <ProblemCard key={p.id} problem={p} {...cardProps} />
                     ))}
                   </div>
                 </section>
               )}
 
+              {/* Hidden SR overflow notice */}
+              {hiddenSRCount > 0 && (
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
+                  <span>📅</span>
+                  <span>
+                    {hiddenSRCount} more problem{hiddenSRCount > 1 ? 's' : ''} hidden to keep your day manageable (max {MAX_DAILY_SR}/day).
+                  </span>
+                  <button
+                    onClick={() => setTab('schedule')}
+                    className="ml-auto text-xs font-semibold underline hover:opacity-75"
+                  >
+                    See Schedule →
+                  </button>
+                </div>
+              )}
+
               {/* All caught up */}
-              {overdueProblems.length === 0 && dueTodayProblems.length === 0 && (
+              {visibleOverdue.length === 0 && visibleDueToday.length === 0 && (
                 <div className="text-center py-14">
                   <div className="text-5xl mb-3">✅</div>
                   <p className="font-semibold text-gray-700 dark:text-gray-300">All caught up!</p>
