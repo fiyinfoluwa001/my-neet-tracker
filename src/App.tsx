@@ -13,7 +13,7 @@ import { isOverdue, isDueToday, isMastered, todayStr } from './utils/spacedRepet
 import { exportData, parseImport } from './utils/storage';
 
 export default function App() {
-  const { state, addProblem, editProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings } =
+  const { state, addProblem, editProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings, updateConceptReview } =
     useProblems();
   useNotifications(state.problems);
   useEmailReminder(state.problems, state.emailSettings);
@@ -80,7 +80,7 @@ export default function App() {
     e.target.value = '';
   };
 
-  const cardProps = { onMarkRevised: markRevised, onRemove: removeProblem, onUpdateConfidence: updateConfidence, onEdit: setEditingProblem };
+  const cardProps = { onMarkRevised: markRevised, onRemove: removeProblem, onUpdateConfidence: updateConfidence, onEdit: setEditingProblem, onUpdateConceptReview: updateConceptReview };
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'today', label: 'Today' },

@@ -160,5 +160,14 @@ export function useProblems() {
     setState(prev => ({ ...prev, emailSettings: settings }));
   }, []);
 
-  return { state, addProblem, editProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings };
+  const updateConceptReview = useCallback((id: string, flag: boolean, notes: string) => {
+    setState(prev => ({
+      ...prev,
+      problems: prev.problems.map(p =>
+        p.id === id ? { ...p, needsConceptReview: flag, conceptNotes: notes } : p
+      ),
+    }));
+  }, []);
+
+  return { state, addProblem, editProblem, removeProblem, markRevised, updateConfidence, toggleDarkMode, importState, updateEmailSettings, updateConceptReview };
 }
