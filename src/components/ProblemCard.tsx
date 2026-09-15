@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Problem } from '../types';
 import { isOverdue, isDueToday, isMastered, getDaysUntilRevision } from '../utils/spacedRepetition';
 
@@ -7,6 +8,7 @@ interface Props {
   onRemove: (id: string) => void;
   onUpdateConfidence: (id: string, rating: number) => void;
   onEdit: (problem: Problem) => void;
+  onUpdateConceptReview: (id: string, flag: boolean, notes: string) => void;
 }
 
 const DIFFICULTY_STYLES = {
@@ -17,11 +19,19 @@ const DIFFICULTY_STYLES = {
 
 const DIFFICULTY_LABELS = { easy: 'Easy', medium: 'Medium', hard: 'Hard' } as const;
 
-export function ProblemCard({ problem, onMarkRevised, onRemove, onUpdateConfidence, onEdit }: Props) {
+export function ProblemCard({ problem, onMarkRevised, onRemove, onUpdateConfidence, onEdit, onUpdateConceptReview }: Props) {
   const mastered  = isMastered(problem);
   const overdue   = isOverdue(problem);
   const dueToday  = isDueToday(problem);
   const daysUntil = getDaysUntilRevision(problem);
+
+  const [localNotes, setLocalNotes] = useState(problem.conceptNotes ?? '');
+  useEffect(() => { setLocalNotes(problem.conceptNotes ?? ''); }, [problem.conceptNotes]);
+
+  function toggleReview() {
+    const next = !problem.needsConceptReview;
+    onUpdateConceptReview(problem.id, next, next ? localNotes : '');
+  }
 
   const borderColor = mastered
     ? 'border-l-gray-300 dark:border-l-gray-600'
@@ -60,6 +70,18 @@ export function ProblemCard({ problem, onMarkRevised, onRemove, onUpdateConfiden
         </div>
         <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
           <button
+            onClick={toggleReview}
+            className={`text-sm leading-none transition-colors ${
+              problem.needsConceptReview
+                ? 'text-purple-500 dark:text-purple-400'
+                : 'text-gray-300 hover:text-purple-400 dark:text-gray-600 dark:hover:text-purple-400'
+            }`}
+            title={problem.needsConceptReview ? 'Clear concept review flag' : 'Flag for concept review'}
+            aria-label="Toggle concept review"
+          >
+            📖
+          </button>
+          <button
             onClick={() => onEdit(problem)}
             className="text-gray-300 hover:text-blue-400 dark:text-gray-600 dark:hover:text-blue-400 transition-colors text-sm leading-none"
             title="Edit problem"
@@ -97,6 +119,21 @@ export function ProblemCard({ problem, onMarkRevised, onRemove, onUpdateConfiden
         </div>
         {urgencyText}
       </div>
+
+      {/* Concept review notes */}
+      {problem.needsConceptReview && (
+        <div className="rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 p-2.5 space-y-1.5">
+          <p className="text-xs font-medium text-purple-700 dark:text-purple-300">📖 Concepts to review</p>
+          <textarea
+            value={localNotes}
+            onChange={e => setLocalNotes(e.target.value)}
+            onBlur={() => onUpdateConceptReview(problem.id, true, localNotes)}
+            placeholder="e.g. sliding window, hash map trade-offs, time complexity..."
+            rows={2}
+            className="w-full text-xs resize-none rounded-md border border-purple-200 dark:border-purple-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-600 p-1.5 focus:outline-none focus:ring-1 focus:ring-purple-400"
+          />
+        </div>
+      )}
 
       {/* Confidence stars */}
       <div className="flex items-center gap-0.5">

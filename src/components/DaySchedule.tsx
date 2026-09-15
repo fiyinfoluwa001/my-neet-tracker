@@ -7,6 +7,7 @@ interface Props {
   onRemove: (id: string) => void;
   onUpdateConfidence: (id: string, rating: number) => void;
   onEdit: (problem: Problem) => void;
+  onUpdateConceptReview: (id: string, flag: boolean, notes: string) => void;
 }
 
 function formatDayLabel(dateStr: string, offset: number): string {
@@ -16,7 +17,7 @@ function formatDayLabel(dateStr: string, offset: number): string {
   return d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 }
 
-export function DaySchedule({ problems, onMarkRevised, onRemove, onUpdateConfidence, onEdit }: Props) {
+export function DaySchedule({ problems, onMarkRevised, onRemove, onUpdateConfidence, onEdit, onUpdateConceptReview }: Props) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -57,6 +58,7 @@ export function DaySchedule({ problems, onMarkRevised, onRemove, onUpdateConfide
                   onRemove={onRemove}
                   onUpdateConfidence={onUpdateConfidence}
                   onEdit={onEdit}
+                  onUpdateConceptReview={onUpdateConceptReview}
                 />
               ))}
             </div>

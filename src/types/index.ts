@@ -12,6 +12,8 @@ export interface Problem {
   confidence: number;    // 1–5
   revisedDates: string[];
   lastOutcome?: 'advanced' | 'held' | 'regressed';
+  needsConceptReview?: boolean;
+  conceptNotes?: string;
 }
 
 export interface EmailSettings {
